@@ -10,7 +10,7 @@ interface Props {
 export const LivePreview: React.FC<Props> = ({ sections, globalStyles }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const prevUrlRef = useRef<string | null>(null);
 
   useEffect(() => {

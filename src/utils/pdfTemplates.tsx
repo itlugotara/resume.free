@@ -97,10 +97,8 @@ const createStyles = (globalStyles: GlobalStyles) => {
 const ResumeSection: React.FC<{
   section: Section;
   styles: ReturnType<typeof createStyles>;
-  globalStyles: GlobalStyles;
-}> = ({ section, styles, globalStyles }) => {
+}> = ({ section, styles }) => {
   const sectionStyle = section.style || {};
-  const gs = { ...DEFAULT_GLOBAL_STYLES, ...globalStyles };
 
   const customTitleStyle = {
     ...(sectionStyle.titleFontSize && { fontSize: sectionStyle.titleFontSize }),
@@ -203,7 +201,6 @@ export const ResumeDocument: React.FC<{
             key={section.id}
             section={section}
             styles={styles}
-            globalStyles={globalStyles}
           />
         ))}
       </Page>
