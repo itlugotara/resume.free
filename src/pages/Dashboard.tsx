@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiClock, FiFileText, FiTrash2 } from "react-icons/fi";
 import { ResumeUploader } from "../components/ResumeUploader";
 import type { Section, GlobalStyles } from "../utils/types";
@@ -103,16 +104,28 @@ export const Dashboard: React.FC = () => {
       </header>
 
       <main className="dashboard-main">
-        <div className="dashboard-actions">
-          <button className="action-card create-card" onClick={createBlank}>
+        <motion.div 
+          className="dashboard-actions"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="action-card create-card" 
+            onClick={createBlank}
+          >
             <div className="action-icon">
               <FiPlus size={32} />
             </div>
             <h3>Create Blank</h3>
             <p>Start from scratch with a template</p>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             className="action-card upload-card"
             onClick={() => setShowUploader(!showUploader)}
           >
@@ -121,27 +134,55 @@ export const Dashboard: React.FC = () => {
             </div>
             <h3>Upload Resume</h3>
             <p>Import & detect sections from PDF</p>
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
-        {showUploader && (
-          <div className="uploader-section">
-            <ResumeUploader onSectionsDetected={handleSectionsDetected} />
-          </div>
-        )}
+        <AnimatePresence>
+          {showUploader && (
+            <motion.div 
+              className="uploader-section"
+              initial={{ opacity: 0, height: 0, y: -20 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ResumeUploader onSectionsDetected={handleSectionsDetected} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {resumes.length > 0 && (
-          <section className="resumes-section">
+          <motion.section 
+            className="resumes-section"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
             <h2 className="section-heading">
               <FiClock size={20} /> Your Resumes
             </h2>
-            <div className="resumes-grid">
-              {resumes.map((resume) => (
-                <div
-                  key={resume.id}
-                  className="resume-card"
-                  onClick={() => navigate(`/editor/${resume.id}`)}
-                >
+            <motion.div 
+              className="resumes-grid"
+              variants={{
+                show: { transition: { staggerChildren: 0.05 } }
+              }}
+              initial="hidden"
+              animate="show"
+            >
+              <AnimatePresence>
+                {resumes.map((resume) => (
+                  <motion.div
+                    key={resume.id}
+                    layout
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      show: { opacity: 1, y: 0 }
+                    }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ y: -4, boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}
+                    className="resume-card"
+                    onClick={() => navigate(`/editor/${resume.id}`)}
+                  >
                   <div className="resume-card-preview">
                     <FiFileText size={36} />
                   </div>
@@ -159,10 +200,11 @@ export const Dashboard: React.FC = () => {
                   >
                     <FiTrash2 size={16} />
                   </button>
-                </div>
-              ))}
-            </div>
-          </section>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </motion.section>
         )}
       </main>
     </div>

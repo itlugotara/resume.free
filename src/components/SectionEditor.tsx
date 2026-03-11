@@ -1,4 +1,5 @@
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiPlus, FiMinus } from "react-icons/fi";
 import type { Section, SectionItem } from "../utils/types";
 import { SECTION_TYPES, generateId } from "../utils/types";
@@ -135,9 +136,18 @@ export const SectionEditor: React.FC<Props> = ({
       )}
 
       {isStructuredType && (
-        <div className="items-editor">
+        <motion.div layout className="items-editor">
+          <AnimatePresence>
           {(section.items || []).map((item, idx) => (
-            <div key={item.id} className="item-card">
+            <motion.div 
+              layout
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              key={item.id} 
+              className="item-card"
+            >
               <div className="item-card-header">
                 <span className="item-number">#{idx + 1}</span>
                 <button
@@ -217,13 +227,19 @@ export const SectionEditor: React.FC<Props> = ({
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-          <button className="btn-add-item" onClick={addItem}>
+          </AnimatePresence>
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="btn-add-item" 
+            onClick={addItem}
+          >
             <FiPlus size={16} /> Add{" "}
             {section.type === "education" ? "Education" : section.type === "projects" ? "Project" : "Experience"}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
     </div>
   );

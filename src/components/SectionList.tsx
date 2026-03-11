@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
   DndContext,
   closestCenter,
@@ -67,9 +68,15 @@ const SortableItem: React.FC<SortableItemProps> = ({
   };
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
       className={`section-list-item ${isActive ? "active" : ""}`}
       onClick={onClick}
     >
@@ -85,7 +92,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
           {SECTION_TYPES.find((t) => t.value === section.type)?.label || "Custom"}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -144,9 +151,15 @@ export const SectionList: React.FC<Props> = ({
     <div className="section-list">
       <div className="section-list-header">
         <h3>Sections</h3>
-        <button className="btn-add-section" onClick={handleAddSection} title="Add section">
+        <motion.button 
+          className="btn-add-section" 
+          onClick={handleAddSection} 
+          title="Add section"
+          whileHover={{ scale: 1.1, rotate: 90 }}
+          whileTap={{ scale: 0.9 }}
+        >
           <FiPlus size={18} />
-        </button>
+        </motion.button>
       </div>
       <DndContext
         sensors={sensors}

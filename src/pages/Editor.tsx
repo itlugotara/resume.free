@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiArrowLeft, FiSettings, FiX } from "react-icons/fi";
 import { SectionList } from "../components/SectionList";
 import { SectionEditor } from "../components/SectionEditor";
@@ -140,9 +141,19 @@ export const Editor: React.FC = () => {
   const currentSection = resume.sections.find((s) => s.id === activeSection);
 
   return (
-    <div className="editor-layout">
+    <motion.div 
+      className="editor-layout"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       {/* Top Bar */}
-      <header className="editor-topbar">
+      <motion.header 
+        className="editor-topbar"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.4 }}
+      >
         <div className="topbar-left">
           <button className="btn-back" onClick={() => navigate("/")}>
             <FiArrowLeft size={20} />
@@ -169,12 +180,17 @@ export const Editor: React.FC = () => {
             title={resume.title}
           />
         </div>
-      </header>
+      </motion.header>
 
       {/* Main Editor Area */}
       <div className="editor-body">
         {/* Left: Section List */}
-        <aside className="editor-sidebar">
+        <motion.aside 
+          className="editor-sidebar"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
           <SectionList
             sections={resume.sections}
             activeId={activeSection}
@@ -182,26 +198,50 @@ export const Editor: React.FC = () => {
             onReorder={handleReorder}
             onAdd={handleAddSection}
           />
-        </aside>
+        </motion.aside>
 
         {/* Center: Section Editor */}
-        <main className="editor-main">
-          {currentSection ? (
-            <SectionEditor
-              key={currentSection.id}
-              section={currentSection}
-              onUpdate={handleUpdateSection}
-              onDelete={handleDeleteSection}
-            />
-          ) : (
-            <div className="editor-empty">
-              <p>Select a section or add a new one</p>
-            </div>
-          )}
-        </main>
+        <motion.main 
+          className="editor-main"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+        >
+          <AnimatePresence mode="wait">
+            {currentSection ? (
+              <motion.div
+                key={currentSection.id}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <SectionEditor
+                  section={currentSection}
+                  onUpdate={handleUpdateSection}
+                  onDelete={handleDeleteSection}
+                />
+              </motion.div>
+            ) : (
+              <motion.div 
+                className="editor-empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <p>Select a section or add a new one</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.main>
 
         {/* Right: Preview + Style Controls */}
-        <aside className={`editor-preview-panel ${showStyles ? "with-styles" : ""}`}>
+        <motion.aside 
+          className={`editor-preview-panel ${showStyles ? "with-styles" : ""}`}
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
           {showStyles && (
             <div className="styles-panel">
               <StyleControls
@@ -210,12 +250,12 @@ export const Editor: React.FC = () => {
               />
             </div>
           )}
-          <LivePreview
-            sections={resume.sections}
-            globalStyles={resume.globalStyles || DEFAULT_GLOBAL_STYLES}
-          />
-        </aside>
+            <LivePreview
+              sections={resume.sections}
+              globalStyles={resume.globalStyles || DEFAULT_GLOBAL_STYLES}
+            />
+        </motion.aside>
       </div>
-    </div>
+    </motion.div>
   );
 };
